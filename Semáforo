@@ -1,0 +1,29 @@
+// Definição dos pinos para facilitar a leitura do código
+int ledVermelho = 5;
+int ledAmarelo = 6;
+int ledVerde = 7;
+
+void setup() {
+  // Configura os pinos dos LEDs como SAÍDA (Output)
+  pinMode(ledVermelho, OUTPUT);
+  pinMode(ledAmarelo, OUTPUT);
+  pinMode(ledVerde, OUTPUT);
+}
+
+void loop() {
+  // --- FASE VERDE ---
+  digitalWrite(ledVerde, HIGH);    // Liga o LED verde
+  digitalWrite(ledAmarelo, LOW);   // Garante que o amarelo esteja desligado
+  digitalWrite(ledVermelho, LOW);  // Garante que o vermelho esteja desligado
+  delay(5000);                     // Espera 5 segundos
+
+  // --- FASE AMARELA ---
+  digitalWrite(ledVerde, LOW);     // Desliga o verde
+  digitalWrite(ledAmarelo, HIGH);  // Liga o amarelo
+  delay(2000);                     // Espera 2 segundos
+
+  // --- FASE VERMELHA ---
+  digitalWrite(ledAmarelo, LOW);   // Desliga o amarelo
+  digitalWrite(ledVermelho, HIGH); // Liga o vermelho
+  delay(5000);                     // Espera 5 segundos
+}  
