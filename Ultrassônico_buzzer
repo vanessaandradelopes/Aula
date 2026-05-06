@@ -1,0 +1,58 @@
+// Definição dos pinos conforme a imagem
+const int pinoTrig = 2;   // Pino de gatilho (Trigger) do sensor ultrassônico
+const int pinoEcho = 3;   // Pino de resposta (Echo) do sensor ultrassônico
+const int pinoBuzzer = 7; // Pino de sinal do módulo Buzzer
+
+// Variáveis para armazenar o tempo e a distância calculada
+long duracao;
+int distancia;
+
+void setup() {
+  // Configura o pino Trig como saída (envia o pulso)
+  pinMode(pinoTrig, OUTPUT); 
+  
+  // Configura o pino Echo como entrada (recebe o pulso de volta)
+  pinMode(pinoEcho, INPUT);  
+  
+  // Configura o pino do Buzzer como saída
+  pinMode(pinoBuzzer, OUTPUT); 
+  
+  // Inicia a comunicação serial para podermos ver a distância no computador
+  Serial.begin(9600); 
+}
+
+void loop() {
+  // Limpa o pino Trig para garantir um pulso limpo
+  digitalWrite(pinoTrig, LOW);
+  delayMicroseconds(2);
+
+  // Envia um pulso de 10 microssegundos para ativar o sensor
+  digitalWrite(pinoTrig, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(pinoTrig, LOW);
+
+  // Lê o tempo que o som levou para ir e voltar (em microssegundos)
+  duracao = pulseIn(pinoEcho, HIGH);
+
+  // Calcula a distância em centímetros (Velocidade do som é ~340m/s)
+  // A fórmula é: (Tempo * 0.034) / 2
+  distancia = duracao * 0.034 / 2;
+
+  // Exibe a distância no Monitor Serial do Arduino
+  Serial.print("Distancia: ");
+  Serial.print(distancia);
+  Serial.println(" cm");
+
+  // Lógica do Alarme: Se a distância for menor que 20cm, o buzzer toca
+  if (distancia > 0 && distancia <= 20) {
+    digitalWrite(pinoBuzzer, HIGH); // Liga o buzzer
+    delay(100);                     // Aguarda um pouco
+    digitalWrite(pinoBuzzer, LOW);  // Desliga o buzzer
+    delay(100);                     // Aguarda para criar um efeito de bip
+  } else {
+    digitalWrite(pinoBuzzer, LOW);  // Garante que o buzzer fique desligado
+  }
+
+  // Pequeno atraso antes da próxima leitura para estabilidade
+  delay(100);
+}
