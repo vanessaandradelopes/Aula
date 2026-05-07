@@ -1,0 +1,53 @@
+#include <Servo.h>
+
+// Definição dos pinos conforme sua imagem
+const int pinoTrig = 2;
+const int pinoEcho = 3;
+const int pinoServo = 7;
+
+Servo meuServo; // Cria o objeto para controlar o servo
+
+void setup() {
+  pinMode(pinoTrig, OUTPUT); // Pino de gatilho como saída
+  pinMode(pinoEcho, INPUT);  // Pino de eco como entrada
+  
+  meuServo.attach(pinoServo); // Conecta o servo ao pino 7
+  meuServo.write(0);          // Inicia o servo na posição 0 graus
+  
+  Serial.begin(9600);         // Inicia o monitor serial para testes
+}
+
+void loop() {
+  long duracao;
+  float distancia;
+
+  // Limpa o pino Trig
+  digitalWrite(pinoTrig, LOW);
+  delayMicroseconds(2);
+
+  // Envia um pulso de 10 microsegundos
+  digitalWrite(pinoTrig, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(pinoTrig, LOW);
+
+  // Lê o tempo que o eco levou para retornar
+  duracao = pulseIn(pinoEcho, HIGH);
+
+  // Calcula a distância em centímetros
+  distancia = duracao * 0.034 / 2;
+
+  // Exibe a distância no Monitor Serial (ajuda a debugar)
+  Serial.print("Distancia: ");
+  Serial.print(distancia);
+  Serial.println(" cm");
+
+  // Lógica do Desafio: Objeto menor que 20cm
+  if (distancia > 0 && distancia < 20) {
+    meuServo.write(90);  // Move o servo para 90 graus (pode ajustar o ângulo)
+    delay(100);          // Pequeno delay para estabilidade
+  } else {
+    meuServo.write(0);   // Retorna para 0 graus se não houver objeto perto
+  }
+
+  delay(100); // Aguarda um pouco antes da próxima leitura
+}
